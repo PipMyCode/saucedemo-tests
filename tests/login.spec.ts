@@ -37,9 +37,15 @@ test.describe('Product tests', () => {
     })
     test('Clicking a product opens its detail page', async ({page}) => {
         await page.getByText('Sauce Labs Bike Light').click()
-        await expect(page.getByText('Sauce Labs Bike Light')).toBeVisible();
+        await expect(page.getByText('Sauce Labs Bike Light')).toBeVisible()
         await expect(page).toHaveURL(/inventory-item/)
         await expect(page.getByRole('button', { name:'Add to cart'})).toBeVisible()
+    })
+    test('add product to cart updates cart badge', async ({page}) => {
+        await page.getByRole('button', { name:'Add to cart'}).first().click()
+        await expect(
+            page.locator('.shopping_cart_badge')
+        ).toHaveText('1')
     })
 
 })
