@@ -35,5 +35,11 @@ test.describe('Product tests', () => {
         await expect(page.locator('[data-test="inventory-container"]'))
             .toContainText('Sauce Labs Bolt T-Shirt')
     })
+    test('Clicking a product opens its detail page', async ({page}) => {
+        await page.getByText('Sauce Labs Bike Light').click()
+        await expect(page.getByText('Sauce Labs Bike Light')).toBeVisible();
+        await expect(page).toHaveURL(/inventory-item/)
+        await expect(page.getByRole('button', { name:'Add to cart'})).toBeVisible()
+    })
 
 })
