@@ -39,17 +39,17 @@ test.describe('Product tests', () => {
         await page.getByText('Sauce Labs Bike Light').click()
         await expect(page.getByText('Sauce Labs Bike Light')).toBeVisible()
         await expect(page).toHaveURL(/inventory-item/)
-        await expect(page.getByRole('button', { name:'Add to cart'})).toBeVisible()
+        await expect(page.getByRole('button', {name: 'Add to cart'})).toBeVisible()
     })
     test('add product to cart updates cart badge', async ({page}) => {
-        await page.getByRole('button', { name:'Add to cart'}).first().click()
+        await page.getByRole('button', {name: 'Add to cart'}).first().click()
         await expect(
             page.locator('.shopping_cart_badge')
         ).toHaveText('1')
     })
     test('adding multiple products to cart updates cart badge', async ({page}) => {
-        await page.getByRole('button', { name:'Add to cart'}).nth(0).click()
-        await page.getByRole('button', { name:'Add to cart'}).nth(1).click()
+        await page.getByRole('button', {name: 'Add to cart'}).nth(0).click()
+        await page.getByRole('button', {name: 'Add to cart'}).nth(1).click()
         await expect(
             page.locator('.shopping_cart_badge')
         ).toHaveText('2')
@@ -73,8 +73,20 @@ test.describe('Product tests', () => {
         await expect(
             page.locator('.shopping_cart_badge')
         ).toHaveText('2')
-
-
     })
+
+    test('navigate to cart and verify both products are there', async ({page}) => {
+        await page.locator('.inventory_item')
+            .filter({hasText: 'Sauce Labs Onesie'})
+            .getByRole('button', {name: 'Add to cart'}).click()
+
+        await page.locator('.inventory_item')
+            .filter({hasText: 'Sauce Labs Fleece Jacket'})
+            .getByRole('button', {name: 'Add to cart'}).click()
+        await page.locator('.shopping_cart_link').click()
+        await expect(page.getByText('Sauce Labs Onesie')).toBeVisible()
+        await expect(page.getByText('Sauce Labs Fleece Jacket')).toBeVisible()
+    })
+
 
 })
