@@ -54,5 +54,12 @@ test.describe('Product tests', () => {
             page.locator('.shopping_cart_badge')
         ).toHaveText('2')
     })
+    test('remove product from cart updates cart badge', async ({page}) => {
+        await page.getByRole('button', {name: 'Add to cart'}).first().click()
+        await page.getByRole('button', {name: 'Remove'}).click()
+        await expect(
+            page.locator('.shopping_cart_badge')
+        ).not.toBeVisible()
+    })
 
 })
