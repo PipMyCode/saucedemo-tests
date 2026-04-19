@@ -47,5 +47,12 @@ test.describe('Product tests', () => {
             page.locator('.shopping_cart_badge')
         ).toHaveText('1')
     })
+    test('adding multiple products to cart updates cart badge', async ({page}) => {
+        await page.getByRole('button', { name:'Add to cart'}).nth(0).click()
+        await page.getByRole('button', { name:'Add to cart'}).nth(1).click()
+        await expect(
+            page.locator('.shopping_cart_badge')
+        ).toHaveText('2')
+    })
 
 })
