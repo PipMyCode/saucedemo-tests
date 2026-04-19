@@ -28,10 +28,9 @@ test.describe('Login tests', () => {
 test.describe('Product tests', () => {
 
     test.beforeEach(async ({page}) => {
-        await page.goto('https://www.saucedemo.com/')
-        await page.getByRole('textbox', {name: 'Username'}).fill('standard_user')
-        await page.getByRole('textbox', {name: 'Password'}).fill('secret_sauce')
-        await page.getByRole('button', {name: 'Login'}).click()
+        const loginPage = new LoginPage(page)
+        await loginPage.goto()
+        await loginPage.login('standard_user', 'secret_sauce')
     })
 
     test('product is displayed on inventory page', async ({page}) => {
