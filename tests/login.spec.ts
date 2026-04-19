@@ -16,10 +16,11 @@ test.describe('Login tests', () => {
     })
 
     test('wrong password shows error', async ({page}) => {
-        await page.getByRole('textbox', {name: 'Username'}).fill('standard_user')
-        await page.getByRole('textbox', {name: 'Password'}).fill('wrongpassword')
-        await page.getByRole('button', {name: 'Login'}).click()
-        await expect(page.locator('[data-test="error"]')).toContainText('Epic sadface')
+        const loginPage = new LoginPage(page)
+        await loginPage.login('standard_user', 'wrong_password')
+        const error = await loginPage.getErrorMessage()
+        await expect(error).toContainText('Epic sadface')
+
     })
 
 })
