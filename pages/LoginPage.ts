@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 export class LoginPage {
     constructor(private page: Page) {}
@@ -8,8 +8,8 @@ export class LoginPage {
     }
 
     async login(username: string, password: string) {
-        await this.page.getByRole('textbox', { name: 'Username' }).fill(standard_user)
-        await this.page.getByRole('textbox', { name: 'Password'}).fill(secret_sauce)
+        await this.page.getByRole('textbox', { name: 'Username' }).fill(username)
+        await this.page.getByRole('textbox', { name: 'Password'}).fill(password)
         await this.page.getByRole('button', { name: 'Login'}).click()
     }
 
