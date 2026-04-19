@@ -44,11 +44,12 @@ test.describe('Product tests', () => {
         await expect(page.getByRole('button', {name: 'Add to cart'})).toBeVisible()
     })
     test('add product to cart updates cart badge', async ({page}) => {
-        await page.getByRole('button', {name: 'Add to cart'}).first().click()
-        await expect(
-            page.locator('.shopping_cart_badge')
-        ).toHaveText('1')
+        const inventoryPage = new InventoryPage(page)
+        await inventoryPage.addToCartByName('Sauce Labs Onesie')
+        const badge = await inventoryPage.getCartBadge()
+        await expect(badge).toHaveText('1')
     })
+
     test('adding multiple products to cart updates cart badge', async ({page}) => {
         await page.getByRole('button', {name: 'Add to cart'}).nth(0).click()
         await page.getByRole('button', {name: 'Add to cart'}).nth(1).click()
@@ -57,35 +58,27 @@ test.describe('Product tests', () => {
         ).toHaveText('2')
     })
     test('remove product from cart updates cart badge', async ({page}) => {
-        await page.getByRole('button', {name: 'Add to cart'}).first().click()
-        await page.getByRole('button', {name: 'Remove'}).click()
-        await expect(
-            page.locator('.shopping_cart_badge')
-        ).not.toBeVisible()
+        const inventoryPage = new InventoryPage(page)
+        await inventoryPage.addToCartByName('Sauce Labs Onesie')
+        await inventoryPage.removeFromCart()
+        const badge = await inventoryPage.getCartBadge()
+        await expect(badge).not.toBeVisible()
     })
+
+
     test('adding two products by name with filter approach', async ({page}) => {
-        await page.locator('.inventory_item')
-            .filter({hasText: 'Sauce Labs Onesie'})
-            .getByRole('button', {name: 'Add to cart'}).click()
-
-        await page.locator('.inventory_item')
-            .filter({hasText: 'Sauce Labs Fleece Jacket'})
-            .getByRole('button', {name: 'Add to cart'}).click()
-
-        await expect(
-            page.locator('.shopping_cart_badge')
-        ).toHaveText('2')
+       const inventoryPage = new InventoryPage(page)
+        await inventoryPage.addToCartByName('Sauce Labs Onesie')
+        await inventoryPage.addToCartByName('Sauce Labs Fleece Jacket')
+        const badge = await inventoryPage.getCartBadge()
+        await expect(badge).toHaveText('2')
     })
 
     test('navigate to cart and verify both products are there', async ({page}) => {
-        await page.locator('.inventory_item')
-            .filter({hasText: 'Sauce Labs Onesie'})
-            .getByRole('button', {name: 'Add to cart'}).click()
-
-        await page.locator('.inventory_item')
-            .filter({hasText: 'Sauce Labs Fleece Jacket'})
-            .getByRole('button', {name: 'Add to cart'}).click()
-        await page.locator('.shopping_cart_link').click()
+        const inventoryPage = new InventoryPage(page)
+        await inventoryPage.addToCartByName('Sauce Labs Onesie')
+        await inventoryPage.addToCartByName('Sauce Labs Fleece Jacket')
+        await inventoryPage.goToCart()
         await expect(page.getByText('Sauce Labs Onesie')).toBeVisible()
         await expect(page.getByText('Sauce Labs Fleece Jacket')).toBeVisible()
     })
