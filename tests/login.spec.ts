@@ -61,5 +61,20 @@ test.describe('Product tests', () => {
             page.locator('.shopping_cart_badge')
         ).not.toBeVisible()
     })
+    test('adding two products by name with filter approach', async ({page}) => {
+        await page.locator('.inventory_item')
+            .filter({hasText: 'Sauce Labs Onesie'})
+            .getByRole('button', {name: 'Add to cart'}).click()
+
+        await page.locator('.inventory_item')
+            .filter({hasText: 'Sauce Labs Fleece Jacket'})
+            .getByRole('button', {name: 'Add to cart'}).click()
+
+        await expect(
+            page.locator('.shopping_cart_badge')
+        ).toHaveText('2')
+
+
+    })
 
 })
