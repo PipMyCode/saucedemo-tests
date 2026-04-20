@@ -1,6 +1,24 @@
 import {test, expect} from '@playwright/test'
 import {LoginPage} from "../pages/LoginPage";
-import {InventoryPage} from "../pages/InventoryPage";
+import {InventoryPage} from "../pages/InventoryPage"
+
+
+const USERS = {
+    standard: {
+        username: 'standard_user',
+        password: 'secret_sauce'
+    },
+    wrongPassword: {
+        username: 'standard_user',
+        password: 'wrong_password'
+    },
+}
+const PRODUCTS = {
+    onesie: 'Sauce Labs Onesie',
+    jacket: 'Sauce Labs Fleece Jacket',
+    boltTShirt: 'Sauce Labs Bolt T-Shirt',
+    bikeLight: 'Sauce Labs Bike Light',
+}
 
 test.describe('Login tests', () => {
 
