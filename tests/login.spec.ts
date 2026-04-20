@@ -23,7 +23,7 @@ test.describe('Login tests', () => {
     let loginPage: LoginPage
 
     test.beforeEach(async ({page}) => {
-        const loginPage = new LoginPage(page)
+        loginPage = new LoginPage(page)
         await loginPage.goto()
     })
 
@@ -46,6 +46,9 @@ test.describe('Product tests', () => {
     let inventoryPage: InventoryPage
 
     test.beforeEach(async ({page}) => {
+        loginPage = new LoginPage(page)
+        inventoryPage = new InventoryPage(page)
+
         await loginPage.goto()
         await loginPage.login(USERS.standard.username, USERS.standard.password)
     })
