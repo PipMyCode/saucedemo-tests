@@ -13,7 +13,7 @@ export class LoginPage {
         await this.page.getByRole('button', { name: 'Login'}).click()
     }
 
-    async getErrorMessage() {
+    getErrorMessage() {
         return this.page.locator('[data-test="error"]')
     }
 }
