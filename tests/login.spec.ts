@@ -2,7 +2,6 @@ import {test, expect} from '@playwright/test'
 import {LoginPage} from "../pages/LoginPage";
 import {InventoryPage} from "../pages/InventoryPage"
 
-
 const USERS = {
     standard: {
         username: 'standard_user',
@@ -21,6 +20,7 @@ const PRODUCTS = {
 }
 
 test.describe('Login tests', () => {
+    let loginPage: LoginPage
 
     test.beforeEach(async ({page}) => {
         const loginPage = new LoginPage(page)
@@ -28,77 +28,62 @@ test.describe('Login tests', () => {
     })
 
     test('valid login shows products page', async ({page}) => {
-        const loginPage = new LoginPage(page)
-        await loginPage.login('standard_user', 'secret_sauce')
+        await loginPage.login(USERS.standard.username, USERS.standard.password)
         await expect(page.getByText('Products')).toBeVisible()
+        await expect(page).toHaveURL(/inventory/)
     })
 
     test('wrong password shows error', async ({page}) => {
-        const loginPage = new LoginPage(page)
-        await loginPage.login('standard_user', 'wrong_password')
-        const error = await loginPage.getErrorMessage()
-        await expect(error).toContainText('Epic sadface')
-
+        await loginPage.login(USERS.wrongPassword.username, USERS.wrongPassword.password)
+        await expect(loginPage.getErrorMessage()).toContainText('Epic sadface')
     })
 
 })
 
 test.describe('Product tests', () => {
 
+    let loginPage: LoginPage
+    let inventoryPage: InventoryPage
+
     test.beforeEach(async ({page}) => {
-        const loginPage = new LoginPage(page)
         await loginPage.goto()
-        await loginPage.login('standard_user', 'secret_sauce')
+        await loginPage.login(USERS.standard.username, USERS.standard.password)
     })
 
     test('product is displayed on inventory page', async ({page}) => {
         await expect(page.locator('[data-test="inventory-container"]'))
-            .toContainText('Sauce Labs Bolt T-Shirt')
+            .toContainText(PRODUCTS.boltTShirt)
     })
     test('Clicking a product opens its detail page', async ({page}) => {
-        await page.getByText('Sauce Labs Bike Light').click()
-        await expect(page.getByText('Sauce Labs Bike Light')).toBeVisible()
+        await inventoryPage.openProductByName(PRODUCTS.bikeLight)
+        await expect(page.getByText(PRODUCTS.bikeLight)).toBeVisible()
         await expect(page).toHaveURL(/inventory-item/)
         await expect(page.getByRole('button', {name: 'Add to cart'})).toBeVisible()
     })
     test('add product to cart updates cart badge', async ({page}) => {
-        const inventoryPage = new InventoryPage(page)
-        await inventoryPage.addToCartByName('Sauce Labs Onesie')
-        const badge = await inventoryPage.getCartBadge()
-        await expect(badge).toHaveText('1')
+        await inventoryPage.addToCartByName(PRODUCTS.onesie)
+        await expect(inventoryPage.getCartBadge()).toHaveText('1')
     })
 
     test('adding multiple products to cart updates cart badge', async ({page}) => {
-        await page.getByRole('button', {name: 'Add to cart'}).nth(0).click()
-        await page.getByRole('button', {name: 'Add to cart'}).nth(1).click()
-        await expect(
-            page.locator('.shopping_cart_badge')
-        ).toHaveText('2')
+        await inventoryPage.addToCartByName(PRODUCTS.onesie)
+        await inventoryPage.addToCartByName(PRODUCTS.jacket)
+        await expect(inventoryPage.getCartBadge()).toHaveText('2')
     })
     test('remove product from cart updates cart badge', async ({page}) => {
-        const inventoryPage = new InventoryPage(page)
-        await inventoryPage.addToCartByName('Sauce Labs Onesie')
-        await inventoryPage.removeFromCart()
-        const badge = await inventoryPage.getCartBadge()
-        await expect(badge).not.toBeVisible()
+        await inventoryPage.addToCartByName(PRODUCTS.onesie)
+        await inventoryPage.removeFromCartByName(PRODUCTS.onesie)
+        await expect(inventoryPage.getCartBadge()).not.toBeVisible()
     })
 
-
-    test('adding two products by name with filter approach', async ({page}) => {
-        const inventoryPage = new InventoryPage(page)
-        await inventoryPage.addToCartByName('Sauce Labs Onesie')
-        await inventoryPage.addToCartByName('Sauce Labs Fleece Jacket')
-        const badge = await inventoryPage.getCartBadge()
-        await expect(badge).toHaveText('2')
-    })
 
     test('navigate to cart and verify both products are there', async ({page}) => {
-        const inventoryPage = new InventoryPage(page)
-        await inventoryPage.addToCartByName('Sauce Labs Onesie')
-        await inventoryPage.addToCartByName('Sauce Labs Fleece Jacket')
+        await inventoryPage.addToCartByName(PRODUCTS.onesie)
+        await inventoryPage.addToCartByName(PRODUCTS.jacket)
         await inventoryPage.goToCart()
-        await expect(page.getByText('Sauce Labs Onesie')).toBeVisible()
-        await expect(page.getByText('Sauce Labs Fleece Jacket')).toBeVisible()
+
+        await expect(page.getByText(PRODUCTS.onesie)).toBeVisible()
+        await expect(page.getByText(PRODUCTS.jacket)).toBeVisible()
     })
 
 
