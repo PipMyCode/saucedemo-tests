@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test'
-import { LoginPage} from "../pages/LoginPage";
-import { InventoryPage } from "../pages/InventoryPage";
+import {LoginPage} from "../pages/LoginPage";
+import {InventoryPage} from "../pages/InventoryPage";
 
 test.describe('Login tests', () => {
 
@@ -67,7 +67,7 @@ test.describe('Product tests', () => {
 
 
     test('adding two products by name with filter approach', async ({page}) => {
-       const inventoryPage = new InventoryPage(page)
+        const inventoryPage = new InventoryPage(page)
         await inventoryPage.addToCartByName('Sauce Labs Onesie')
         await inventoryPage.addToCartByName('Sauce Labs Fleece Jacket')
         const badge = await inventoryPage.getCartBadge()
