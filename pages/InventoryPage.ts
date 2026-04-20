@@ -1,21 +1,22 @@
-import { Page } from '@playwright/test'
+import {Page} from '@playwright/test'
 
 export class InventoryPage {
-    constructor(private page: Page) {}
+    constructor(private page: Page) {
+    }
 
     async addToCartByName(productName: string) {
         await this.page
             .locator('.inventory_item')
-            .filter({ hasText: productName })
-            .getByRole('button', { name: 'Add to cart' })
+            .filter({hasText: productName})
+            .getByRole('button', {name: 'Add to cart'})
             .click()
     }
 
     async removeFromCartByName(productName: string) {
         await this.page
             .locator('.inventory_item')
-            .filter({ hasText: productName})
-            .getByRole('button', { name: 'Remove' })
+            .filter({hasText: productName})
+            .getByRole('button', {name: 'Remove'})
             .click()
     }
 
@@ -30,7 +31,7 @@ export class InventoryPage {
     async openProductByName(productName: string) {
         await this.page
             .locator('.inventory_item')
-            .filter({ hasText: productName })
+            .filter({hasText: productName})
             .locator('.inventory_item_name')
             .click()
     }
